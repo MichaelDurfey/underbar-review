@@ -190,7 +190,7 @@
     var noDefaultValue = accumulator === undefined;
     accumulator = noDefaultValue ? collection[0] : accumulator;
     var collection2 = noDefaultValue ? collection.slice(1) : collection;
-    _.each(collection2, function(item){
+    _.each(collection2, function(item) {
       accumulator = iterator(accumulator, item);
     });
     return accumulator;
@@ -212,12 +212,22 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    iterator = iterator || _.identity;
+    return _.reduce(collection, function(accumulator, item) {
+      return Boolean(iterator(item)) && accumulator;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    
+    var x = _.every(collection, function(item) {
+      return !iterator(item);
+    });
+    return !x;
   };
 
 
@@ -240,11 +250,28 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var args = Array.from(arguments);
+    _.each(args, function(item) {
+      for (var x in item) {
+        obj[x] = item[x];
+      }      
+    });
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    for (let i = 1; i < arguments.length; i++) {
+      let sourceObj = arguments[i];
+      for (let key in sourceObj) {
+        if (!(key in obj)) {
+          obj[key] = sourceObj[key];
+        }
+      }
+    }
+    
+    return obj;
   };
 
 
@@ -288,6 +315,19 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    
+    var result = {};
+    
+    return function() {
+      let args = JSON.stringify(arguments);
+      if (args in result) {
+        return result[args];
+      } else {
+        result[args] = func.apply(this, arguments);
+      }
+      return result[args];
+    };
+    
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -297,6 +337,11 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    let args = Array.from(arguments).slice(2);
+    setTimeout(function() {
+      func.apply(this, args);
+    }, wait);
+    
   };
 
 
@@ -311,6 +356,8 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    
+    
   };
 
 
@@ -325,6 +372,9 @@
   // Calls the method named by functionOrKey on each value in the list.
   // Note: You will need to learn a bit about .apply to complete this.
   _.invoke = function(collection, functionOrKey, args) {
+    
+    
+    
   };
 
   // Sort the object's values by a criterion produced by an iterator.
