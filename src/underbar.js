@@ -357,6 +357,14 @@
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
     
+    var result = [];
+    var remaining = array.slice();
+    while (remaining.length > 0) { 
+      let rndmIdx = Math.floor(Math.random() * remaining.length);
+      result.push(remaining[rndmIdx]);
+      remaining.splice(rndmIdx, 1);
+    }
+    return result;
     
   };
 
